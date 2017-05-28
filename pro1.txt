@@ -1,0 +1,15 @@
+1. agent.sources.seqGenSrc.command = tail -F /home/cloudera/Downloads/StatewiseDistrictwisePhysicalProgress.xml
+agent.sinks.loggerSink.hdfs.path= hdfs://localhost/user/cloudera/Progress
+A = LOAD '/user/cloudera/Progress' using org.apache.pig.piggybank.storage.XMLLoader('document') as (x:chararray);
+B= Filter A by $2/$10 == 1
+c = foreach B generate $1 as District
+store c into /user/jayant/textfile.txt
+sqoop export --connect mysql:jdbc://localhost/traning_db --table hundered_per --export-dir /user/jayant/textfile.txt --username root --password root --fields-terminated-by '\t'
+
+2. agent.sources.seqGenSrc.command = tail -F /home/cloudera/Downloads/StatewiseDistrictwisePhysicalProgress.xml
+agent.sinks.loggerSink.hdfs.path= hdfs://localhost/user/cloudera/Progress
+A = LOAD '/user/cloudera/Progress' using org.apache.pig.piggybank.storage.XMLLoader('document') as (x:chararray);
+B= Filter A by $10/$2 > .8
+c = foreach B generate $1 as District
+store c into /user/jayant/textfile.txt
+sqoop export --connect mysql:jdbc://localhost/traning_db --table hundered_per --export-dir /user/jayant/textfile.txt --username root --password root --fields-terminated-by '\t'
